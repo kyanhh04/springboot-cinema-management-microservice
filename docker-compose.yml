@@ -1,0 +1,176 @@
+version: '3.8'
+
+services:
+  # MySQL for Booking Service - Port 3307
+  mysql-booking:
+    image: mysql:8.0
+    container_name: mysql-booking
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: bookingdb
+      MYSQL_USER: booking_user
+      MYSQL_PASSWORD: booking123
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-booking-data:/var/lib/mysql
+    networks:
+      - cinema-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot123"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+    command: --default-authentication-plugin=mysql_native_password
+
+  # MySQL for Cinema Service - Port 3308
+  mysql-cinema:
+    image: mysql:8.0
+    container_name: mysql-cinema
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: cinemadb
+      MYSQL_USER: cinema_user
+      MYSQL_PASSWORD: cinema123
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql-cinema-data:/var/lib/mysql
+    networks:
+      - cinema-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot123"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+    command: --default-authentication-plugin=mysql_native_password
+
+  # MySQL for Inventory Service - Port 3309
+  mysql-inventory:
+    image: mysql:8.0
+    container_name: mysql-inventory
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: inventorydb
+      MYSQL_USER: inventory_user
+      MYSQL_PASSWORD: inventory123
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql-inventory-data:/var/lib/mysql
+    networks:
+      - cinema-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot123"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+    command: --default-authentication-plugin=mysql_native_password
+
+  # MySQL for User Service - Port 3311
+  mysql-user:
+    image: mysql:8.0
+    container_name: mysql-user
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: userdb
+      MYSQL_USER: user_user
+      MYSQL_PASSWORD: user123
+    ports:
+      - "3311:3306"
+    volumes:
+      - mysql-user-data:/var/lib/mysql
+    networks:
+      - cinema-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot123"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+    command: --default-authentication-plugin=mysql_native_password
+
+  # MySQL for Notification Service - Port 3312
+  mysql-notification:
+    image: mysql:8.0
+    container_name: mysql-notification
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: notificationdb
+      MYSQL_USER: notification_user
+      MYSQL_PASSWORD: notification123
+    ports:
+      - "3312:3306"
+    volumes:
+      - mysql-notification-data:/var/lib/mysql
+    networks:
+      - cinema-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot123"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+    command: --default-authentication-plugin=mysql_native_password
+
+  # Loki - Log aggregation system
+  loki:
+    image: grafana/loki:2.9.0
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - cinema-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3100/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Promtail - Log collector
+  promtail:
+    image: grafana/promtail:2.9.0
+    container_name: promtail
+    volumes:
+      - ./promtail-config.yml:/etc/promtail/config.yml
+      - ./logs:/logs
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+    networks:
+      - cinema-network
+
+  # Grafana - Visualization
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - loki
+    networks:
+      - cinema-network
+
+volumes:
+  mysql-booking-data:
+    driver: local
+  mysql-cinema-data:
+    driver: local
+  mysql-inventory-data:
+    driver: local
+  mysql-user-data:
+    driver: local
+  mysql-notification-data:
+    driver: local
+  grafana-data:
+    driver: local
+
+networks:
+  cinema-network:
+    driver: bridge

@@ -1,0 +1,55 @@
+package com.example.booking_service.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "booking_seats", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"booking_id", "seat_id"})
+})
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class BookingSeat {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id", nullable = false)
+    private Booking booking;
+    
+    @Column(name = "seat_id", nullable = false)
+    private Long seatId;
+    
+    @Column(name = "seat_row", nullable = false, length = 5)
+    private String seatRow;
+    
+    @Column(name = "seat_number", nullable = false)
+    private Integer seatNumber;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "seat_type", nullable = false)
+    private SeatType seatType = SeatType.REGULAR;
+    
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
+    
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+    
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
+    
+    public enum SeatType {
+        REGULAR, VIP, PREMIUM, COUPLE
+    }
+}

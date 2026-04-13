@@ -1,0 +1,11 @@
+com\example\common\exception\ServiceUnavailableException.class
+com\example\common\config\CommonAutoConfiguration.class
+com\example\common\exception\ForbiddenException.class
+com\example\common\exception\BusinessException.class
+com\example\common\exception\UnauthorizedException.class
+com\example\common\exception\GlobalExceptionHandler.class
+com\example\common\exception\ErrorResponse$ErrorResponseBuilder.class
+com\example\common\exception\ErrorResponse$ValidationError.class
+com\example\common\exception\ErrorResponse$ValidationError$ValidationErrorBuilder.class
+com\example\common\exception\ErrorResponse.class
+com\example\common\exception\ResourceNotFoundException.class
