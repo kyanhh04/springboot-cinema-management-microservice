@@ -28,15 +28,8 @@ public class Screen {
     @Column(name = "screen_number", nullable = false, length = 20)
     private String screenNumber;
     
-    @Column(nullable = false, length = 100)
-    private String name;
-    
     @Column(name = "total_seats", nullable = false)
     private Integer totalSeats;
-    
-    @Enumerated(EnumType.STRING)
-    @Column(name = "screen_type", nullable = false)
-    private ScreenType screenType = ScreenType.TWO_D;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -63,10 +56,6 @@ public class Screen {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
-    }
-    
-    public enum ScreenType {
-        TWO_D, THREE_D, IMAX, FOUR_DX, DOLBY_ATMOS
     }
     
     public enum ScreenStatus {

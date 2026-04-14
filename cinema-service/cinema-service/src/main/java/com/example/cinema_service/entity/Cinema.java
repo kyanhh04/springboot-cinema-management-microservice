@@ -31,9 +31,6 @@ public class Cinema {
     @Column(length = 100)
     private String state;
     
-    @Column(name = "postal_code", length = 20)
-    private String postalCode;
-    
     @Column(name = "phone_number", length = 20)
     private String phoneNumber;
     
@@ -42,9 +39,6 @@ public class Cinema {
     
     @Column(columnDefinition = "TEXT")
     private String description;
-    
-    @Column(columnDefinition = "JSON")
-    private String facilities;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -32,8 +32,9 @@ public class Movie {
     @Column(length = 100)
     private String genre;
     
-    @Column(length = 50)
-    private String language;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "subtitle_type", length = 50)
+    private SubtitleType subtitleType;
     
     @Column(name = "release_date")
     private LocalDate releaseDate;
@@ -79,5 +80,10 @@ public class Movie {
     
     public enum MovieStatus {
         COMING_SOON, NOW_SHOWING, ENDED
+    }
+    
+    public enum SubtitleType {
+        VIETSUB,      // Phụ đề tiếng Việt
+        DUBBED,       // Thuyết minh
     }
 }

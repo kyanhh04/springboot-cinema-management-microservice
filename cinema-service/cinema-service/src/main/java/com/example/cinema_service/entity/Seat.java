@@ -47,7 +47,7 @@ public class Seat {
     }
     
     public enum SeatType {
-        REGULAR, VIP, PREMIUM, COUPLE
+        REGULAR, VIP, COUPLE
     }
     
     public enum SeatStatus {

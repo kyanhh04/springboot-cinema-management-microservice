@@ -1,40 +1,77 @@
-//package com.example.cinema_service.service;
-//
-//import com.example.cinema_service.repository.CinemaRepository;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
-//
-//import java.util.List;
-//import java.util.Optional;
-//
-//@Service
-//public class CinemaService {
-//
-//    @Autowired
-//    private CinemaRepository cinemaRepository;
-//
-//    public List<Cinema> getAllCinemas() {
-//        return cinemaRepository.findAll();
-//    }
-//
-//    public Optional<Cinema> getCinemaById(Long id) {
-//        return cinemaRepository.findById(id);
-//    }
-//
-//    public Cinema createCinema(Cinema cinema) {
-//        return cinemaRepository.save(cinema);
-//    }
-//
-//    public boolean reserveSeats(Long cinemaId, int numberOfSeats) {
-//        Optional<Cinema> cinemaOpt = cinemaRepository.findById(cinemaId);
-//        if (cinemaOpt.isPresent()) {
-//            Cinema cinema = cinemaOpt.get();
-//            if (cinema.getAvailableSeats() >= numberOfSeats) {
-//                cinema.setAvailableSeats(cinema.getAvailableSeats() - numberOfSeats);
-//                cinemaRepository.save(cinema);
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//}
+package com.example.cinema_service.service;
+
+import com.example.cinema_service.dto.CinemaDTO;
+import com.example.cinema_service.dto.ScreenDTO;
+import com.example.cinema_service.entity.Cinema;
+import com.example.cinema_service.entity.Screen;
+import com.example.cinema_service.mapper.CinemaMapper;
+import com.example.cinema_service.repository.CinemaRepository;
+import com.example.cinema_service.repository.ScreenRepository;
+import com.example.common.exception.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class CinemaService {
+
+    private final CinemaRepository cinemaRepository;
+    private final ScreenRepository screenRepository;
+
+    public List<CinemaDTO> getAllCinemas() {
+        return cinemaRepository.findAll().stream()
+                .map(CinemaMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public CinemaDTO getCinemaById(Long id) {
+        Cinema cinema = cinemaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cinema", "id", id));
+        return CinemaMapper.toDTO(cinema);
+    }
+
+    @Transactional
+    public CinemaDTO createCinema(Cinema cinema) {
+        Cinema saved = cinemaRepository.save(cinema);
+        return CinemaMapper.toDTO(saved);
+    }
+
+    @Transactional
+    public CinemaDTO updateCinema(Long id, Cinema cinemaDetails) {
+        Cinema cinema = cinemaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cinema", "id", id));
+        
+        cinema.setName(cinemaDetails.getName());
+        cinema.setAddress(cinemaDetails.getAddress());
+        cinema.setCity(cinemaDetails.getCity());
+        cinema.setState(cinemaDetails.getState());
+        cinema.setPhoneNumber(cinemaDetails.getPhoneNumber());
+        cinema.setEmail(cinemaDetails.getEmail());
+        cinema.setDescription(cinemaDetails.getDescription());
+        cinema.setStatus(cinemaDetails.getStatus());
+        
+        Cinema updated = cinemaRepository.save(cinema);
+        return CinemaMapper.toDTO(updated);
+    }
+
+    @Transactional
+    public void deleteCinema(Long id) {
+        if (!cinemaRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Cinema", "id", id);
+        }
+        cinemaRepository.deleteById(id);
+    }
+
+    public List<ScreenDTO> getScreensByCinema(Long cinemaId) {
+        if (!cinemaRepository.existsById(cinemaId)) {
+            throw new ResourceNotFoundException("Cinema", "id", cinemaId);
+        }
+        return screenRepository.findByCinemaId(cinemaId).stream()
+                .map(CinemaMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+}
