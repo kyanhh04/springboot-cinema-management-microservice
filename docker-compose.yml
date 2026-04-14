@@ -11,7 +11,7 @@ services:
       MYSQL_USER: booking_user
       MYSQL_PASSWORD: booking123
     ports:
-      - "3307:3306"
+      - "3310:3306"
     volumes:
       - mysql-booking-data:/var/lib/mysql
     networks:

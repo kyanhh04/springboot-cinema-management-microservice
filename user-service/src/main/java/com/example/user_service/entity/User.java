@@ -4,10 +4,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -15,68 +15,41 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Column(unique = true, nullable = false, length = 50)
+
+    @Column(unique = true, nullable = false)
     private String username;
-    
-    @Column(unique = true, nullable = false, length = 100)
+
+    @Column(unique = true, nullable = false)
     private String email;
-    
+
     @Column(nullable = false)
     private String password;
-    
-    @Column(name = "full_name", nullable = false, length = 100)
+
+    @Column(name = "full_name")
     private String fullName;
-    
-    @Column(name = "phone_number", length = 20)
+
+    @Column(name = "phone_number")
     private String phoneNumber;
-    
-    @Column(name = "date_of_birth")
-    private LocalDate dateOfBirth;
-    
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserRole role = UserRole.CUSTOMER;
-    
-    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;
+
     @Column(nullable = false)
-    private UserStatus status = UserStatus.ACTIVE;
-    
-    @Column(name = "created_at", nullable = false, updatable = false)
+    private Boolean active = true;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
-    
+
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    
-    @Column(name = "last_login")
-    private LocalDateTime lastLogin;
-    
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserAddress> addresses;
-    
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserPaymentMethod> paymentMethods;
-    
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-    
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
-    
-    public enum UserRole {
-        ADMIN, MANAGER, CUSTOMER
-    }
-    
-    public enum UserStatus {
-        ACTIVE, INACTIVE, SUSPENDED
+
+    public enum Role {
+        USER, ADMIN
     }
 }
