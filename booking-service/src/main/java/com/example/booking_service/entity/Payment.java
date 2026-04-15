@@ -40,21 +40,15 @@ public class Payment {
     @Column(name = "payment_status", nullable = false)
     private PaymentStatus paymentStatus = PaymentStatus.PENDING;
     
-    @Column(name = "transaction_id")
-    private String transactionId;
-    
-    @Column(name = "payment_gateway", length = 50)
-    private String paymentGateway;
-    
     @Column(name = "paid_at")
     private LocalDateTime paidAt;
-    
+
     @Column(name = "refunded_at")
     private LocalDateTime refundedAt;
-    
+
     @Column(name = "refund_amount", precision = 10, scale = 2)
     private BigDecimal refundAmount;
-    
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
@@ -73,10 +67,10 @@ public class Payment {
     }
     
     public enum PaymentMethod {
-        CREDIT_CARD, DEBIT_CARD, E_WALLET, BANK_TRANSFER, CASH
+        CREDIT_CARD, BANK_TRANSFER
     }
     
     public enum PaymentStatus {
-        PENDING, SUCCESS, FAILED, REFUNDED
+        PENDING, PAID, FAILED, REFUNDED
     }
 }

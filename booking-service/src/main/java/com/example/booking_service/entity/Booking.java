@@ -44,11 +44,7 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     @Column(name = "booking_status", nullable = false)
     private BookingStatus bookingStatus = BookingStatus.PENDING;
-    
-    @Enumerated(EnumType.STRING)
-    @Column(name = "payment_status", nullable = false)
-    private PaymentStatus paymentStatus = PaymentStatus.PENDING;
-    
+
     @Column(name = "booking_date", nullable = false)
     private LocalDateTime bookingDate;
     
@@ -57,13 +53,7 @@ public class Booking {
     
     @Column(name = "confirmed_at")
     private LocalDateTime confirmedAt;
-    
-    @Column(name = "cancelled_at")
-    private LocalDateTime cancelledAt;
-    
-    @Column(name = "cancellation_reason", columnDefinition = "TEXT")
-    private String cancellationReason;
-    
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
@@ -89,10 +79,6 @@ public class Booking {
     }
     
     public enum BookingStatus {
-        PENDING, CONFIRMED, CANCELLED, EXPIRED
-    }
-    
-    public enum PaymentStatus {
-        PENDING, PAID, FAILED, REFUNDED
+        PENDING, CONFIRMED, CANCELLED
     }
 }

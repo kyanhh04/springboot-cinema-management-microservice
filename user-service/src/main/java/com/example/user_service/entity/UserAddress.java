@@ -34,12 +34,6 @@ public class UserAddress {
     @Column(length = 100)
     private String state;
     
-    @Column(name = "postal_code", length = 20)
-    private String postalCode;
-    
-    @Column(length = 100)
-    private String country = "Vietnam";
-    
     @Column(name = "is_default")
     private Boolean isDefault = false;
     

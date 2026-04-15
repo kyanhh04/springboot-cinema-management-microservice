@@ -23,26 +23,8 @@ public class NotificationPreference {
     @Column(name = "user_id", nullable = false)
     private Long userId;
     
-    @Column(name = "email_enabled")
-    private Boolean emailEnabled = true;
-    
-    @Column(name = "sms_enabled")
-    private Boolean smsEnabled = true;
-    
-    @Column(name = "push_enabled")
-    private Boolean pushEnabled = true;
-    
-    @Column(name = "in_app_enabled")
-    private Boolean inAppEnabled = true;
-    
-    @Column(name = "booking_notifications")
-    private Boolean bookingNotifications = true;
-    
-    @Column(name = "promotional_notifications")
-    private Boolean promotionalNotifications = true;
-    
-    @Column(name = "system_notifications")
-    private Boolean systemNotifications = true;
+    @Column(name = "email_notifications_enabled")
+    private Boolean emailNotificationsEnabled = true;
     
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

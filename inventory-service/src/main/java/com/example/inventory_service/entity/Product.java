@@ -70,7 +70,7 @@ public class Product {
     }
     
     public enum ProductCategory {
-        FOOD, BEVERAGE, COMBO, MERCHANDISE
+        FOOD, BEVERAGE, COMBO
     }
     
     public enum ProductStatus {

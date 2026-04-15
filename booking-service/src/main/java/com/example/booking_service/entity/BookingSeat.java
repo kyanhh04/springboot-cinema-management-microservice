@@ -50,6 +50,6 @@ public class BookingSeat {
     }
     
     public enum SeatType {
-        REGULAR, VIP, PREMIUM, COUPLE
+        REGULAR, VIP, COUPLE
     }
 }
