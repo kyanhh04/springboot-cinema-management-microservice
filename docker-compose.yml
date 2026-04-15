@@ -126,19 +126,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # Promtail - Log collector
-  promtail:
-    image: grafana/promtail:2.9.0
-    container_name: promtail
-    volumes:
-      - ./promtail-config.yml:/etc/promtail/config.yml
-      - ./logs:/logs
-    command: -config.file=/etc/promtail/config.yml
-    depends_on:
-      - loki
-    networks:
-      - cinema-network
-
   # Grafana - Visualization
   grafana:
     image: grafana/grafana:10.2.0
