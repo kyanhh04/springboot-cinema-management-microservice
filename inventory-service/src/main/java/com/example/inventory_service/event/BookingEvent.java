@@ -1,4 +1,4 @@
-package com.example.booking_service.event;
+package com.example.inventory_service.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,16 +15,16 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingEvent implements Serializable {
-    
+
     private Long bookingId;
     private String bookingReference;
     private Long userId;
-    private String userEmail; // Will be fetched from User Service
+    private String userEmail;
     private Long showtimeId;
     private Long cinemaId;
     private Long movieId;
-    private String movieTitle; // Will be fetched from Cinema Service
-    private String cinemaName; // Will be fetched from Cinema Service
+    private String movieTitle;
+    private String cinemaName;
     private Integer totalSeats;
     private BigDecimal totalAmount;
     private String bookingStatus;
@@ -34,7 +34,7 @@ public class BookingEvent implements Serializable {
     private LocalDateTime confirmedAt;
     private LocalDateTime cancelledAt;
     private String cancellationReason;
-    private String eventType; // CREATED, CONFIRMED, CANCELLED
+    private String eventType;
     private LocalDateTime eventTimestamp;
     private List<ProductItem> productItems;
 

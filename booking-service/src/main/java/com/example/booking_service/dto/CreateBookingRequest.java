@@ -31,4 +31,23 @@ public class CreateBookingRequest {
     @NotNull(message = "Total amount is required")
     @Positive(message = "Total amount must be positive")
     private BigDecimal totalAmount;
+
+    private List<ProductItem> productItems;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProductItem {
+
+        @NotNull(message = "Product ID is required")
+        private Long productId;
+
+        @NotNull(message = "Product quantity is required")
+        @Positive(message = "Product quantity must be positive")
+        private Integer quantity;
+
+        @Positive(message = "Product unit price must be positive")
+        private BigDecimal unitPrice;
+    }
 }

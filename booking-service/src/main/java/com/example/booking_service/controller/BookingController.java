@@ -3,6 +3,7 @@ package com.example.booking_service.controller;
 import com.example.booking_service.dto.BookingResponse;
 import com.example.booking_service.dto.CreateBookingRequest;
 import com.example.booking_service.entity.Booking;
+import com.example.booking_service.entity.BookingProduct;
 import com.example.booking_service.service.BookingService;
 import com.example.common.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
@@ -53,6 +54,17 @@ public class BookingController {
             booking.setMovieId(request.getMovieId());
             booking.setTotalSeats(request.getSeatIds() != null ? request.getSeatIds().size() : 0);
             booking.setTotalAmount(request.getTotalAmount());
+            if (request.getProductItems() != null) {
+                booking.setBookingProducts(request.getProductItems().stream()
+                        .map(item -> {
+                            BookingProduct bookingProduct = new BookingProduct();
+                            bookingProduct.setProductId(item.getProductId());
+                            bookingProduct.setQuantity(item.getQuantity());
+                            bookingProduct.setUnitPrice(item.getUnitPrice());
+                            return bookingProduct;
+                        })
+                        .collect(Collectors.toList()));
+            }
             
             Booking created = bookingService.createBooking(booking);
             return ResponseEntity.status(HttpStatus.CREATED)

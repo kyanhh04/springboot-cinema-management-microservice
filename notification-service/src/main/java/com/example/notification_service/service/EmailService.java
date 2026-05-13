@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
-    // TODO: Integrate with actual email service (SendGrid, AWS SES, etc.)
     
     public void sendBookingCreatedEmail(BookingEvent event) {
         log.info("Sending booking created email to: {}", event.getUserEmail());

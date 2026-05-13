@@ -48,6 +48,9 @@ public class BookingService {
 
         booking.setBookingDate(LocalDateTime.now());
         booking.setExpiryTime(LocalDateTime.now().plusMinutes(15));
+        if (booking.getBookingProducts() != null) {
+            booking.getBookingProducts().forEach(product -> product.setBooking(booking));
+        }
         
         Booking savedBooking = bookingRepository.save(booking);
         log.info("Booking created with reference: {}", savedBooking.getBookingReference());

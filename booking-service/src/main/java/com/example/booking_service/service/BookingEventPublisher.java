@@ -9,6 +9,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -81,6 +82,21 @@ public class BookingEventPublisher {
                 .cancellationReason(booking.getCancellationReason())
                 .eventType(eventType)
                 .eventTimestamp(LocalDateTime.now())
+                .productItems(buildProductItems(booking))
                 .build();
+    }
+
+    private List<BookingEvent.ProductItem> buildProductItems(Booking booking) {
+        if (booking.getBookingProducts() == null || booking.getBookingProducts().isEmpty()) {
+            return List.of();
+        }
+
+        return booking.getBookingProducts().stream()
+                .map(product -> BookingEvent.ProductItem.builder()
+                        .productId(product.getProductId())
+                        .quantity(product.getQuantity())
+                        .unitPrice(product.getUnitPrice())
+                        .build())
+                .toList();
     }
 }

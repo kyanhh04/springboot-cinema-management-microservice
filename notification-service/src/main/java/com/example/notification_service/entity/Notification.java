@@ -21,17 +21,18 @@ public class Notification {
     @Column(name = "user_id", nullable = false)
     private Long userId;
     
-    @Column(name = "booking_id", nullable = false)
-    private Long bookingId;
-    
-    @Column(name = "recipient_email", nullable = false)
-    private String recipientEmail;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private NotificationType type;
     
     @Column(nullable = false)
-    private String subject;
+    private String title;
     
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String content;
+    private String message;
+    
+    @Column(nullable = false)
+    private String recipient;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -58,6 +59,10 @@ public class Notification {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+    
+    public enum NotificationType {
+        EMAIL, SMS
     }
     
     public enum NotificationStatus {

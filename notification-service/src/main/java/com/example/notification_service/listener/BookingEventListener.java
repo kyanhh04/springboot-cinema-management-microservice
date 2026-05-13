@@ -1,5 +1,6 @@
 package com.example.notification_service.listener;
 
+import com.example.notification_service.config.RabbitMQConfig;
 import com.example.notification_service.event.BookingEvent;
 import com.example.notification_service.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ public class BookingEventListener {
 
     private final NotificationService notificationService;
 
-    @RabbitListener(queues = "booking.created.queue")
+    @RabbitListener(queues = RabbitMQConfig.BOOKING_CREATED_QUEUE)
     public void handleBookingCreated(BookingEvent event) {
         log.info("Received booking created event: {}", event.getBookingReference());
         
@@ -27,7 +28,7 @@ public class BookingEventListener {
         }
     }
 
-    @RabbitListener(queues = "booking.confirmed.queue")
+    @RabbitListener(queues = RabbitMQConfig.BOOKING_CONFIRMED_QUEUE)
     public void handleBookingConfirmed(BookingEvent event) {
         log.info("Received booking confirmed event: {}", event.getBookingReference());
         
@@ -40,7 +41,7 @@ public class BookingEventListener {
         }
     }
 
-    @RabbitListener(queues = "booking.cancelled.queue")
+    @RabbitListener(queues = RabbitMQConfig.BOOKING_CANCELLED_QUEUE)
     public void handleBookingCancelled(BookingEvent event) {
         log.info("Received booking cancelled event: {}", event.getBookingReference());
         

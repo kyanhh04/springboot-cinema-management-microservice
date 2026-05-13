@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -35,4 +36,15 @@ public class BookingEvent implements Serializable {
     private String cancellationReason;
     private String eventType;
     private LocalDateTime eventTimestamp;
+    private List<ProductItem> productItems;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProductItem implements Serializable {
+        private Long productId;
+        private Integer quantity;
+        private BigDecimal unitPrice;
+    }
 }

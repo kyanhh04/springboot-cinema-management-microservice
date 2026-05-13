@@ -1,6 +1,6 @@
-package com.example.notification_service.config;
+package com.example.inventory_service.config;
 
-import com.example.notification_service.event.BookingEvent;
+import com.example.inventory_service.event.BookingEvent;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -19,12 +19,8 @@ import java.util.Map;
 public class RabbitMQConfig {
 
     public static final String BOOKING_EXCHANGE = "booking.exchange";
-
-    public static final String BOOKING_CREATED_QUEUE = "notification.booking.created.queue";
-    public static final String BOOKING_CONFIRMED_QUEUE = "notification.booking.confirmed.queue";
-    public static final String BOOKING_CANCELLED_QUEUE = "notification.booking.cancelled.queue";
-
-    public static final String BOOKING_CREATED_ROUTING_KEY = "booking.created";
+    public static final String INVENTORY_BOOKING_CONFIRMED_QUEUE = "inventory.booking.confirmed.queue";
+    public static final String INVENTORY_BOOKING_CANCELLED_QUEUE = "inventory.booking.cancelled.queue";
     public static final String BOOKING_CONFIRMED_ROUTING_KEY = "booking.confirmed";
     public static final String BOOKING_CANCELLED_ROUTING_KEY = "booking.cancelled";
     public static final String BOOKING_EVENT_TYPE_ID = "bookingEvent";
@@ -34,44 +30,30 @@ public class RabbitMQConfig {
         return new TopicExchange(BOOKING_EXCHANGE);
     }
 
-    @Bean(name = "bookingCreatedQueue")
-    public Queue bookingCreatedQueue() {
-        return QueueBuilder.durable(BOOKING_CREATED_QUEUE).build();
+    @Bean(name = "inventoryBookingConfirmedQueue")
+    public Queue inventoryBookingConfirmedQueue() {
+        return QueueBuilder.durable(INVENTORY_BOOKING_CONFIRMED_QUEUE).build();
     }
 
-    @Bean(name = "bookingConfirmedQueue")
-    public Queue bookingConfirmedQueue() {
-        return QueueBuilder.durable(BOOKING_CONFIRMED_QUEUE).build();
-    }
-
-    @Bean(name = "bookingCancelledQueue")
-    public Queue bookingCancelledQueue() {
-        return QueueBuilder.durable(BOOKING_CANCELLED_QUEUE).build();
+    @Bean(name = "inventoryBookingCancelledQueue")
+    public Queue inventoryBookingCancelledQueue() {
+        return QueueBuilder.durable(INVENTORY_BOOKING_CANCELLED_QUEUE).build();
     }
 
     @Bean
-    public Binding bookingCreatedBinding(
-            @Qualifier("bookingCreatedQueue") Queue bookingCreatedQueue,
+    public Binding inventoryBookingConfirmedBinding(
+            @Qualifier("inventoryBookingConfirmedQueue") Queue inventoryBookingConfirmedQueue,
             @Qualifier("bookingExchange") TopicExchange bookingExchange) {
-        return BindingBuilder.bind(bookingCreatedQueue)
-                .to(bookingExchange)
-                .with(BOOKING_CREATED_ROUTING_KEY);
-    }
-
-    @Bean
-    public Binding bookingConfirmedBinding(
-            @Qualifier("bookingConfirmedQueue") Queue bookingConfirmedQueue,
-            @Qualifier("bookingExchange") TopicExchange bookingExchange) {
-        return BindingBuilder.bind(bookingConfirmedQueue)
+        return BindingBuilder.bind(inventoryBookingConfirmedQueue)
                 .to(bookingExchange)
                 .with(BOOKING_CONFIRMED_ROUTING_KEY);
     }
 
     @Bean
-    public Binding bookingCancelledBinding(
-            @Qualifier("bookingCancelledQueue") Queue bookingCancelledQueue,
+    public Binding inventoryBookingCancelledBinding(
+            @Qualifier("inventoryBookingCancelledQueue") Queue inventoryBookingCancelledQueue,
             @Qualifier("bookingExchange") TopicExchange bookingExchange) {
-        return BindingBuilder.bind(bookingCancelledQueue)
+        return BindingBuilder.bind(inventoryBookingCancelledQueue)
                 .to(bookingExchange)
                 .with(BOOKING_CANCELLED_ROUTING_KEY);
     }
