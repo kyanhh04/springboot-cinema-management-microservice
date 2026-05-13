@@ -2,6 +2,7 @@ package com.example.booking_service.service;
 
 import com.example.booking_service.client.CinemaClient;
 import com.example.booking_service.entity.Booking;
+import com.example.booking_service.entity.Payment;
 import com.example.booking_service.repository.BookingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,15 +44,10 @@ public class BookingService {
         
         // Set initial status
         booking.setBookingStatus(Booking.BookingStatus.PENDING);
-        booking.setPaymentStatus(Booking.PaymentStatus.PENDING);
-        
-        // Set booking date and expiry time (15 minutes to complete payment)
+        booking.setPaymentStatus(Payment.PaymentStatus.PENDING);
+
         booking.setBookingDate(LocalDateTime.now());
         booking.setExpiryTime(LocalDateTime.now().plusMinutes(15));
-        
-        // TODO: Validate showtime exists via CinemaClient
-        // TODO: Check seat availability via InventoryClient
-        // TODO: Reserve seats
         
         Booking savedBooking = bookingRepository.save(booking);
         log.info("Booking created with reference: {}", savedBooking.getBookingReference());
@@ -61,7 +57,6 @@ public class BookingService {
             eventPublisher.publishBookingCreated(savedBooking);
         } catch (Exception e) {
             log.error("Failed to publish booking created event", e);
-            // Don't fail the booking if event publishing fails
         }
         
         return savedBooking;
@@ -78,7 +73,7 @@ public class BookingService {
         }
         
         booking.setBookingStatus(Booking.BookingStatus.CONFIRMED);
-        booking.setPaymentStatus(Booking.PaymentStatus.PAID);
+        booking.setPaymentStatus(Payment.PaymentStatus.PAID);
         booking.setConfirmedAt(LocalDateTime.now());
         
         Booking confirmedBooking = bookingRepository.save(booking);
@@ -107,14 +102,11 @@ public class BookingService {
         booking.setBookingStatus(Booking.BookingStatus.CANCELLED);
         booking.setCancelledAt(LocalDateTime.now());
         booking.setCancellationReason(reason);
-        
-        // TODO: Release seats via InventoryClient
-        // TODO: Process refund if payment was made
+
         
         Booking cancelledBooking = bookingRepository.save(booking);
         log.info("Booking cancelled: {}", cancelledBooking.getBookingReference());
-        
-        // Publish event to RabbitMQ
+
         try {
             eventPublisher.publishBookingCancelled(cancelledBooking);
         } catch (Exception e) {

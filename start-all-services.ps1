@@ -24,7 +24,7 @@ foreach ($port in $ports) {
 
 Write-Host ""
 Write-Host "Note: Make sure Docker containers are running!" -ForegroundColor Yellow
-Write-Host "  Run: docker compose up -d" -ForegroundColor Cyan
+Write-Host "  Run: docker-compose up -d" -ForegroundColor Cyan
 Write-Host ""
 
 Write-Host ""
@@ -65,6 +65,10 @@ Write-Host "============================================" -ForegroundColor Green
 Write-Host "All services are starting!" -ForegroundColor Green
 Write-Host "============================================" -ForegroundColor Green
 Write-Host ""
+Write-Host "Infrastructure:" -ForegroundColor Cyan
+Write-Host "- Loki:                 http://localhost:3100" -ForegroundColor White
+Write-Host "- Grafana:              http://localhost:3000 (admin/admin)" -ForegroundColor White
+Write-Host ""
 Write-Host "Microservices:" -ForegroundColor Cyan
 Write-Host "- Eureka Server:        http://localhost:8761" -ForegroundColor White
 Write-Host "- User Service:         http://localhost:8081" -ForegroundColor White
@@ -73,6 +77,10 @@ Write-Host "- Inventory Service:    http://localhost:8083" -ForegroundColor Whit
 Write-Host "- Cinema Service:       http://localhost:8084" -ForegroundColor White
 Write-Host "- Booking Service:      http://localhost:8085" -ForegroundColor White
 Write-Host "- Gateway:              http://localhost:8888" -ForegroundColor White
+Write-Host ""
+Write-Host "Logging:" -ForegroundColor Cyan
+Write-Host "- View logs in Grafana: http://localhost:3000" -ForegroundColor White
+Write-Host "- Query example: {app=`"user-service`"}" -ForegroundColor Gray
 Write-Host ""
 Write-Host "Opening Eureka Dashboard in 5 seconds..." -ForegroundColor Yellow
 Start-Sleep -Seconds 5

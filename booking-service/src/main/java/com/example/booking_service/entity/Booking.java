@@ -45,6 +45,10 @@ public class Booking {
     @Column(name = "booking_status", nullable = false)
     private BookingStatus bookingStatus = BookingStatus.PENDING;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_status", nullable = false)
+    private Payment.PaymentStatus paymentStatus = Payment.PaymentStatus.PENDING;
+
     @Column(name = "booking_date", nullable = false)
     private LocalDateTime bookingDate;
     
@@ -53,6 +57,12 @@ public class Booking {
     
     @Column(name = "confirmed_at")
     private LocalDateTime confirmedAt;
+
+    @Column(name = "cancelled_at")
+    private LocalDateTime cancelledAt;
+
+    @Column(name = "cancellation_reason", length = 255)
+    private String cancellationReason;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
