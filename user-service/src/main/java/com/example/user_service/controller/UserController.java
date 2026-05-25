@@ -3,6 +3,10 @@ package com.example.user_service.controller;
 import com.example.user_service.dto.ChangePasswordRequest;
 import com.example.user_service.dto.UpdateUserRequest;
 import com.example.user_service.dto.UserDTO;
+import com.example.user_service.entity.UserAddress;
+import com.example.user_service.entity.UserPaymentMethod;
+import com.example.user_service.service.UserAddressService;
+import com.example.user_service.service.UserPaymentMethodService;
 import com.example.user_service.service.UserService;
 import com.example.common.security.SecurityUtils;
 import jakarta.validation.Valid;
@@ -21,6 +25,8 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final UserAddressService userAddressService;
+    private final UserPaymentMethodService userPaymentMethodService;
 
     @GetMapping("/me")
     public ResponseEntity<UserDTO> getCurrentUser(Authentication authentication) {
@@ -60,10 +66,69 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
+    @PutMapping("/{id}/block")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserDTO> blockUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.setActive(id, false));
+    }
+
+    @PutMapping("/{id}/unblock")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserDTO> unblockUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.setActive(id, true));
+    }
+
     @PostMapping("/validate")
     public ResponseEntity<Map<String, Boolean>> validateToken(@RequestHeader("Authorization") String token) {
         String jwtToken = token.replace("Bearer ", "");
         boolean isValid = userService.validateToken(jwtToken);
         return ResponseEntity.ok(Map.of("valid", isValid));
+    }
+
+    @GetMapping("/me/addresses")
+    public ResponseEntity<List<UserAddress>> getMyAddresses() {
+        return ResponseEntity.ok(userAddressService.getAddresses(SecurityUtils.getCurrentUserId()));
+    }
+
+    @PostMapping("/me/addresses")
+    public ResponseEntity<UserAddress> createMyAddress(@RequestBody UserAddress address) {
+        return ResponseEntity.ok(userAddressService.createAddress(SecurityUtils.getCurrentUserId(), address));
+    }
+
+    @PutMapping("/me/addresses/{addressId}")
+    public ResponseEntity<UserAddress> updateMyAddress(
+            @PathVariable Long addressId,
+            @RequestBody UserAddress address) {
+        return ResponseEntity.ok(userAddressService.updateAddress(SecurityUtils.getCurrentUserId(), addressId, address));
+    }
+
+    @DeleteMapping("/me/addresses/{addressId}")
+    public ResponseEntity<Map<String, String>> deleteMyAddress(@PathVariable Long addressId) {
+        userAddressService.deleteAddress(SecurityUtils.getCurrentUserId(), addressId);
+        return ResponseEntity.ok(Map.of("message", "Address deleted successfully"));
+    }
+
+    @GetMapping("/me/payment-methods")
+    public ResponseEntity<List<UserPaymentMethod>> getMyPaymentMethods() {
+        return ResponseEntity.ok(userPaymentMethodService.getPaymentMethods(SecurityUtils.getCurrentUserId()));
+    }
+
+    @PostMapping("/me/payment-methods")
+    public ResponseEntity<UserPaymentMethod> createMyPaymentMethod(@RequestBody UserPaymentMethod paymentMethod) {
+        return ResponseEntity.ok(userPaymentMethodService.createPaymentMethod(SecurityUtils.getCurrentUserId(), paymentMethod));
+    }
+
+    @PutMapping("/me/payment-methods/{paymentMethodId}")
+    public ResponseEntity<UserPaymentMethod> updateMyPaymentMethod(
+            @PathVariable Long paymentMethodId,
+            @RequestBody UserPaymentMethod paymentMethod) {
+        return ResponseEntity.ok(userPaymentMethodService.updatePaymentMethod(
+                SecurityUtils.getCurrentUserId(), paymentMethodId, paymentMethod));
+    }
+
+    @DeleteMapping("/me/payment-methods/{paymentMethodId}")
+    public ResponseEntity<Map<String, String>> deleteMyPaymentMethod(@PathVariable Long paymentMethodId) {
+        userPaymentMethodService.deletePaymentMethod(SecurityUtils.getCurrentUserId(), paymentMethodId);
+        return ResponseEntity.ok(Map.of("message", "Payment method deleted successfully"));
     }
 }

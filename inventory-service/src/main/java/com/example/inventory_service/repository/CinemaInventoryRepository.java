@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface CinemaInventoryRepository extends JpaRepository<CinemaInventory, Long> {
@@ -23,4 +24,13 @@ public interface CinemaInventoryRepository extends JpaRepository<CinemaInventory
     Optional<CinemaInventory> findByCinemaIdAndProductIdForUpdate(
             @Param("cinemaId") Long cinemaId,
             @Param("productId") Long productId);
+
+    List<CinemaInventory> findByCinemaId(Long cinemaId);
+
+    @Query("""
+            select inventory
+            from CinemaInventory inventory
+            where inventory.quantity <= inventory.minStockLevel
+            """)
+    List<CinemaInventory> findLowStock();
 }

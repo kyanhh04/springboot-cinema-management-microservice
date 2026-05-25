@@ -2,6 +2,7 @@ package com.example.booking_service.service;
 
 import com.example.booking_service.client.CinemaClient;
 import com.example.booking_service.entity.Booking;
+import com.example.booking_service.entity.BookingSeat;
 import com.example.booking_service.entity.Payment;
 import com.example.booking_service.repository.BookingRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -37,7 +39,17 @@ public class BookingService {
 
     @Transactional
     public Booking createBooking(Booking booking) {
+        return createBooking(booking, List.of());
+    }
+
+    @Transactional
+    public Booking createBooking(Booking booking, List<Long> seatIds) {
         log.info("Creating booking for user: {}", booking.getUserId());
+        if (seatIds != null && !seatIds.isEmpty()) {
+            cinemaClient.reserveSeats(booking.getShowtimeId(), seatIds.size());
+            booking.setBookingSeats(buildBookingSeats(booking, seatIds));
+            booking.setTotalSeats(seatIds.size());
+        }
         
         // Generate unique booking reference
         booking.setBookingReference(generateBookingReference());
@@ -105,6 +117,9 @@ public class BookingService {
         booking.setBookingStatus(Booking.BookingStatus.CANCELLED);
         booking.setCancelledAt(LocalDateTime.now());
         booking.setCancellationReason(reason);
+        if (booking.getTotalSeats() != null && booking.getTotalSeats() > 0) {
+            cinemaClient.releaseSeats(booking.getShowtimeId(), booking.getTotalSeats());
+        }
 
         
         Booking cancelledBooking = bookingRepository.save(booking);
@@ -121,5 +136,22 @@ public class BookingService {
 
     private String generateBookingReference() {
         return "BK" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+    }
+
+    private List<BookingSeat> buildBookingSeats(Booking booking, List<Long> seatIds) {
+        return seatIds.stream()
+                .map(seatId -> {
+                    CinemaClient.SeatInfo seatInfo = cinemaClient.getSeatById(seatId);
+                    BookingSeat bookingSeat = new BookingSeat();
+                    bookingSeat.setBooking(booking);
+                    bookingSeat.setSeatId(seatId);
+                    bookingSeat.setSeatRow(seatInfo.getSeatRow());
+                    bookingSeat.setSeatNumber(seatInfo.getSeatNumber());
+                    bookingSeat.setSeatType(BookingSeat.SeatType.valueOf(seatInfo.getSeatType()));
+                    bookingSeat.setPrice(booking.getTotalAmount()
+                            .divide(java.math.BigDecimal.valueOf(seatIds.size()), 2, java.math.RoundingMode.HALF_UP));
+                    return bookingSeat;
+                })
+                .collect(Collectors.toList());
     }
 }

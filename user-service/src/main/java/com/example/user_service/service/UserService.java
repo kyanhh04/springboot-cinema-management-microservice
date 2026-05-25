@@ -197,6 +197,14 @@ public class UserService {
         }
     }
 
+    @Transactional
+    public UserDTO setActive(Long userId, boolean active) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setActive(active);
+        return convertToDTO(userRepository.save(user));
+    }
+
     private UserDTO convertToDTO(User user) {
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());

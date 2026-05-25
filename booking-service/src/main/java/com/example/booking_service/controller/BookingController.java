@@ -66,7 +66,7 @@ public class BookingController {
                         .collect(Collectors.toList()));
             }
             
-            Booking created = bookingService.createBooking(booking);
+            Booking created = bookingService.createBooking(booking, request.getSeatIds());
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(BookingResponse.fromEntity(created));
         } catch (RuntimeException e) {

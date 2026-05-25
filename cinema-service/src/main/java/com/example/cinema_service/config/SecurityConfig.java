@@ -29,6 +29,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/movies/**").permitAll()
                         .requestMatchers("/api/showtimes/**").permitAll()
                         .requestMatchers("/api/cinemas/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/screens/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         // Admin only endpoints
                         .requestMatchers("/api/screens/**").hasRole("ADMIN")

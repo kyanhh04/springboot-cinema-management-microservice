@@ -110,6 +110,12 @@ public class ScreenService {
         }
     }
 
+    public SeatDTO getSeatById(Long seatId) {
+        Seat seat = seatRepository.findById(seatId)
+                .orElseThrow(() -> new ResourceNotFoundException("Seat", "id", seatId));
+        return CinemaMapper.toDTO(seat);
+    }
+
     @Transactional
     public List<SeatDTO> generateSeatsForScreen(Long screenId, int rows, int seatsPerRow) {
         try {

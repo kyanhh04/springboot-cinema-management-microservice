@@ -25,6 +25,18 @@ public class NotificationPreference {
     
     @Column(name = "email_notifications_enabled")
     private Boolean emailNotificationsEnabled = true;
+
+    @Column(name = "booking_created_email_enabled")
+    private Boolean bookingCreatedEmailEnabled = true;
+
+    @Column(name = "booking_confirmed_email_enabled")
+    private Boolean bookingConfirmedEmailEnabled = true;
+
+    @Column(name = "booking_cancelled_email_enabled")
+    private Boolean bookingCancelledEmailEnabled = true;
+
+    @Column(name = "promotion_email_enabled")
+    private Boolean promotionEmailEnabled = true;
     
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

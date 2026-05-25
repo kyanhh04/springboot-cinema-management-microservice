@@ -27,12 +27,24 @@ public class Notification {
     
     @Column(nullable = false)
     private String title;
+
+    @Column
+    private String subject;
     
     @Column(nullable = false, columnDefinition = "TEXT")
     private String message;
+
+    @Column(name = "html_message", columnDefinition = "TEXT")
+    private String htmlMessage;
     
     @Column(nullable = false)
     private String recipient;
+
+    @Column(name = "event_type", length = 100)
+    private String eventType;
+
+    @Column(name = "template_name", length = 100)
+    private String templateName;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -43,6 +55,12 @@ public class Notification {
     
     @Column(name = "error_message", columnDefinition = "TEXT")
     private String errorMessage;
+
+    @Column(name = "retry_count")
+    private Integer retryCount = 0;
+
+    @Column(name = "next_retry_at")
+    private LocalDateTime nextRetryAt;
     
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

@@ -1,5 +1,6 @@
 package com.example.inventory_service.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,6 +21,7 @@ public class StockMovement {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cinema_inventory_id", nullable = false)
+    @JsonIgnore
     private CinemaInventory cinemaInventory;
     
     @Enumerated(EnumType.STRING)

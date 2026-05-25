@@ -48,6 +48,11 @@ public class ScreenController {
         return ResponseEntity.ok(screenService.getSeatsByScreen(id));
     }
 
+    @GetMapping("/seats/{seatId}")
+    public ResponseEntity<SeatDTO> getSeatById(@PathVariable Long seatId) {
+        return ResponseEntity.ok(screenService.getSeatById(seatId));
+    }
+
     @PostMapping("/{id}/generate-seats")
     public ResponseEntity<List<SeatDTO>> generateSeats(
             @PathVariable Long id,

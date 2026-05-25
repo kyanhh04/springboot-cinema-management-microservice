@@ -4,6 +4,8 @@ import com.example.inventory_service.entity.BookingProduct;
 import com.example.inventory_service.entity.CinemaInventory;
 import com.example.inventory_service.entity.Product;
 import com.example.inventory_service.entity.StockMovement;
+import com.example.inventory_service.dto.InventoryRequest;
+import com.example.inventory_service.dto.StockAdjustmentRequest;
 import com.example.inventory_service.event.BookingEvent;
 import com.example.inventory_service.repository.BookingProductRepository;
 import com.example.inventory_service.repository.CinemaInventoryRepository;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -23,6 +26,85 @@ import java.util.List;
 public class StockService {
 
     private static final String REFERENCE_TYPE_BOOKING = "BOOKING";
+
+    public List<CinemaInventory> getAllInventory() {
+        return cinemaInventoryRepository.findAll();
+    }
+
+    public List<CinemaInventory> getInventoryByCinema(Long cinemaId) {
+        return cinemaInventoryRepository.findByCinemaId(cinemaId);
+    }
+
+    public List<CinemaInventory> getLowStockInventory() {
+        return cinemaInventoryRepository.findLowStock();
+    }
+
+    public List<StockMovement> getAllMovements() {
+        return stockMovementRepository.findAll();
+    }
+
+    public List<StockMovement> getMovementsByInventory(Long inventoryId) {
+        return stockMovementRepository.findByCinemaInventoryIdOrderByCreatedAtDesc(inventoryId);
+    }
+
+    @Transactional
+    public CinemaInventory createOrUpdateInventory(InventoryRequest request) {
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new RuntimeException("Product not found: " + request.getProductId()));
+
+        CinemaInventory inventory = cinemaInventoryRepository
+                .findByCinemaIdAndProductIdForUpdate(request.getCinemaId(), request.getProductId())
+                .orElseGet(CinemaInventory::new);
+
+        inventory.setCinemaId(request.getCinemaId());
+        inventory.setProduct(product);
+        if (request.getQuantity() != null) {
+            inventory.setQuantity(request.getQuantity());
+        }
+        if (request.getMinStockLevel() != null) {
+            inventory.setMinStockLevel(request.getMinStockLevel());
+        }
+        if (request.getMaxStockLevel() != null) {
+            inventory.setMaxStockLevel(request.getMaxStockLevel());
+        }
+        return cinemaInventoryRepository.save(inventory);
+    }
+
+    @Transactional
+    public CinemaInventory adjustStock(StockAdjustmentRequest request) {
+        CinemaInventory inventory = cinemaInventoryRepository
+                .findByCinemaIdAndProductIdForUpdate(request.getCinemaId(), request.getProductId())
+                .orElseThrow(() -> new RuntimeException("Inventory not found for cinema "
+                        + request.getCinemaId() + " and product " + request.getProductId()));
+
+        StockMovement.MovementType movementType = request.getMovementType() != null
+                ? request.getMovementType()
+                : StockMovement.MovementType.ADJUSTMENT;
+        int quantity = request.getQuantity() != null ? request.getQuantity() : 0;
+
+        if (quantity <= 0) {
+            throw new RuntimeException("Quantity must be positive");
+        }
+
+        if (movementType == StockMovement.MovementType.IN || movementType == StockMovement.MovementType.RETURN) {
+            inventory.setQuantity(inventory.getQuantity() + quantity);
+            inventory.setLastRestockedAt(LocalDateTime.now());
+        } else if (movementType == StockMovement.MovementType.OUT) {
+            if (inventory.getQuantity() < quantity) {
+                throw new RuntimeException("Insufficient stock");
+            }
+            inventory.setQuantity(inventory.getQuantity() - quantity);
+        } else {
+            inventory.setQuantity(quantity);
+        }
+
+        CinemaInventory saved = cinemaInventoryRepository.save(inventory);
+        StockMovement movement = buildStockMovement(saved, movementType, quantity, null,
+                request.getNotes() != null ? request.getNotes() : "Manual stock adjustment");
+        movement.setPerformedBy(request.getPerformedBy());
+        stockMovementRepository.save(movement);
+        return saved;
+    }
 
     private final CinemaInventoryRepository cinemaInventoryRepository;
     private final ProductRepository productRepository;

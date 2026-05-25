@@ -1,5 +1,6 @@
 package com.example.inventory_service.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -47,6 +48,7 @@ public class CinemaInventory {
     private LocalDateTime updatedAt;
     
     @OneToMany(mappedBy = "cinemaInventory", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<StockMovement> stockMovements;
     
     @PrePersist
