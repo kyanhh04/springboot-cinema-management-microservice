@@ -58,7 +58,7 @@ Kiểm tra các service hạ tầng:
 
 - RabbitMQ Management: http://localhost:15672
 - Grafana: http://localhost:3000
-- Loki: http://localhost:3100
+- Loki ready check: http://localhost:3100/ready
 
 RabbitMQ mặc định:
 
@@ -134,6 +134,16 @@ Gateway:
 
 ```text
 http://localhost:8888
+```
+
+Swagger UI:
+
+```text
+http://localhost:8081/swagger-ui.html
+http://localhost:8082/swagger-ui.html
+http://localhost:8083/swagger-ui.html
+http://localhost:8084/swagger-ui.html
+http://localhost:8085/swagger-ui.html
 ```
 
 Tất cả API nên gọi qua Gateway:

@@ -159,7 +159,7 @@ Write-Host "All services are starting!" -ForegroundColor Green
 Write-Host "============================================" -ForegroundColor Green
 Write-Host ""
 Write-Host "Infrastructure:" -ForegroundColor Cyan
-Write-Host "- Loki:                 http://localhost:3100" -ForegroundColor White
+Write-Host "- Loki ready check:     http://localhost:3100/ready" -ForegroundColor White
 Write-Host "- Grafana:              http://localhost:3000 (admin/admin)" -ForegroundColor White
 Write-Host "- RabbitMQ:             http://localhost:15672 (guest/guest)" -ForegroundColor White
 Write-Host ""

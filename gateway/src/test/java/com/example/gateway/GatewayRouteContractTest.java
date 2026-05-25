@@ -16,15 +16,15 @@ class GatewayRouteContractTest {
             properties.load(inputStream);
         }
 
-        assertThat(properties.getProperty("spring.cloud.gateway.mvc.routes[0].predicates[0]"))
+        assertThat(properties.getProperty("spring.cloud.gateway.server.webmvc.routes[0].predicates[0]"))
                 .contains("/api/auth/**", "/api/users/**");
-        assertThat(properties.getProperty("spring.cloud.gateway.mvc.routes[1].predicates[0]"))
+        assertThat(properties.getProperty("spring.cloud.gateway.server.webmvc.routes[1].predicates[0]"))
                 .contains("/api/cinemas/**", "/api/movies/**", "/api/screens/**", "/api/showtimes/**");
-        assertThat(properties.getProperty("spring.cloud.gateway.mvc.routes[2].predicates[0]"))
+        assertThat(properties.getProperty("spring.cloud.gateway.server.webmvc.routes[2].predicates[0]"))
                 .contains("/api/bookings/**", "/api/payments/**");
-        assertThat(properties.getProperty("spring.cloud.gateway.mvc.routes[3].predicates[0]"))
+        assertThat(properties.getProperty("spring.cloud.gateway.server.webmvc.routes[3].predicates[0]"))
                 .contains("/api/inventory/**", "/api/products/**");
-        assertThat(properties.getProperty("spring.cloud.gateway.mvc.routes[4].predicates[0]"))
+        assertThat(properties.getProperty("spring.cloud.gateway.server.webmvc.routes[4].predicates[0]"))
                 .contains("/api/notifications/**");
     }
 }

@@ -1,0 +1,1030 @@
+{
+  "baseUrl": "http://localhost:8888",
+  "authHeader": {
+    "Authorization": "Bearer <JWT_TOKEN>"
+  },
+  "adminAuthHeader": {
+    "Authorization": "Bearer <ADMIN_JWT_TOKEN>"
+  },
+  "apis": {
+    "auth": [
+      {
+        "name": "Register user",
+        "method": "POST",
+        "url": "/api/auth/register",
+        "auth": false,
+        "body": {
+          "username": "john",
+          "email": "john@example.com",
+          "password": "secret123",
+          "fullName": "John Doe",
+          "phoneNumber": "0901234567"
+        }
+      },
+      {
+        "name": "Login",
+        "method": "POST",
+        "url": "/api/auth/login",
+        "auth": false,
+        "body": {
+          "username": "john",
+          "password": "secret123"
+        }
+      }
+    ],
+    "users": [
+      {
+        "name": "Get current user",
+        "method": "GET",
+        "url": "/api/users/me",
+        "auth": "USER",
+        "body": null
+      },
+      {
+        "name": "Update current user",
+        "method": "PUT",
+        "url": "/api/users/me",
+        "auth": "USER",
+        "body": {
+          "fullName": "John Updated",
+          "phoneNumber": "0912345678",
+          "email": "john.updated@example.com"
+        }
+      },
+      {
+        "name": "Change password",
+        "method": "PUT",
+        "url": "/api/users/me/password",
+        "auth": "USER",
+        "body": {
+          "currentPassword": "secret123",
+          "newPassword": "newsecret123"
+        }
+      },
+      {
+        "name": "Deactivate current account",
+        "method": "DELETE",
+        "url": "/api/users/me",
+        "auth": "USER",
+        "body": null
+      },
+      {
+        "name": "Get all users",
+        "method": "GET",
+        "url": "/api/users",
+        "auth": "ADMIN",
+        "body": null
+      },
+      {
+        "name": "Get user by id",
+        "method": "GET",
+        "url": "/api/users/{userId}",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "userId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Block user",
+        "method": "PUT",
+        "url": "/api/users/{userId}/block",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "userId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Unblock user",
+        "method": "PUT",
+        "url": "/api/users/{userId}/unblock",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "userId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Validate token",
+        "method": "POST",
+        "url": "/api/users/validate",
+        "auth": "USER",
+        "body": null
+      }
+    ],
+    "userAddresses": [
+      {
+        "name": "Get my addresses",
+        "method": "GET",
+        "url": "/api/users/me/addresses",
+        "auth": "USER",
+        "body": null
+      },
+      {
+        "name": "Create my address",
+        "method": "POST",
+        "url": "/api/users/me/addresses",
+        "auth": "USER",
+        "body": {
+          "addressLine1": "123 Nguyen Hue",
+          "addressLine2": "Floor 2",
+          "city": "Ho Chi Minh",
+          "state": "HCM",
+          "isDefault": true
+        }
+      },
+      {
+        "name": "Update my address",
+        "method": "PUT",
+        "url": "/api/users/me/addresses/{addressId}",
+        "auth": "USER",
+        "pathVariables": {
+          "addressId": 1
+        },
+        "body": {
+          "addressLine1": "456 Le Loi",
+          "addressLine2": "Room 10",
+          "city": "Ho Chi Minh",
+          "state": "HCM",
+          "isDefault": false
+        }
+      },
+      {
+        "name": "Delete my address",
+        "method": "DELETE",
+        "url": "/api/users/me/addresses/{addressId}",
+        "auth": "USER",
+        "pathVariables": {
+          "addressId": 1
+        },
+        "body": null
+      }
+    ],
+    "userPaymentMethods": [
+      {
+        "name": "Get my payment methods",
+        "method": "GET",
+        "url": "/api/users/me/payment-methods",
+        "auth": "USER",
+        "body": null
+      },
+      {
+        "name": "Create my payment method",
+        "method": "POST",
+        "url": "/api/users/me/payment-methods",
+        "auth": "USER",
+        "body": {
+          "paymentType": "CREDIT_CARD",
+          "cardNumber": "4111111111111111",
+          "cardHolderName": "JOHN DOE",
+          "expiryDate": "12/29",
+          "isDefault": true
+        }
+      },
+      {
+        "name": "Update my payment method",
+        "method": "PUT",
+        "url": "/api/users/me/payment-methods/{paymentMethodId}",
+        "auth": "USER",
+        "pathVariables": {
+          "paymentMethodId": 1
+        },
+        "body": {
+          "paymentType": "DEBIT_CARD",
+          "cardNumber": "5555555555554444",
+          "cardHolderName": "JOHN DOE",
+          "expiryDate": "10/30",
+          "isDefault": false
+        }
+      },
+      {
+        "name": "Delete my payment method",
+        "method": "DELETE",
+        "url": "/api/users/me/payment-methods/{paymentMethodId}",
+        "auth": "USER",
+        "pathVariables": {
+          "paymentMethodId": 1
+        },
+        "body": null
+      }
+    ],
+    "cinemas": [
+      {
+        "name": "Get cinemas",
+        "method": "GET",
+        "url": "/api/cinemas",
+        "auth": false,
+        "body": null
+      },
+      {
+        "name": "Get cinema by id",
+        "method": "GET",
+        "url": "/api/cinemas/{cinemaId}",
+        "auth": false,
+        "pathVariables": {
+          "cinemaId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Create cinema",
+        "method": "POST",
+        "url": "/api/cinemas",
+        "auth": "ADMIN",
+        "body": {
+          "name": "CGV Vincom",
+          "address": "72 Le Thanh Ton",
+          "city": "Ho Chi Minh",
+          "state": "HCM",
+          "phoneNumber": "02812345678",
+          "email": "cgv@example.com",
+          "description": "Cinema in district 1",
+          "status": "ACTIVE"
+        }
+      },
+      {
+        "name": "Update cinema",
+        "method": "PUT",
+        "url": "/api/cinemas/{cinemaId}",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "cinemaId": 1
+        },
+        "body": {
+          "name": "CGV Vincom Updated",
+          "address": "72 Le Thanh Ton",
+          "city": "Ho Chi Minh",
+          "state": "HCM",
+          "phoneNumber": "02812345678",
+          "email": "cgv.updated@example.com",
+          "description": "Updated cinema",
+          "status": "ACTIVE"
+        }
+      },
+      {
+        "name": "Delete cinema",
+        "method": "DELETE",
+        "url": "/api/cinemas/{cinemaId}",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "cinemaId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Get screens by cinema",
+        "method": "GET",
+        "url": "/api/cinemas/{cinemaId}/screens",
+        "auth": false,
+        "pathVariables": {
+          "cinemaId": 1
+        },
+        "body": null
+      }
+    ],
+    "movies": [
+      {
+        "name": "Get movies",
+        "method": "GET",
+        "url": "/api/movies",
+        "auth": false,
+        "body": null
+      },
+      {
+        "name": "Get movie by id",
+        "method": "GET",
+        "url": "/api/movies/{movieId}",
+        "auth": false,
+        "pathVariables": {
+          "movieId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Get now showing movies",
+        "method": "GET",
+        "url": "/api/movies/now-showing",
+        "auth": false,
+        "body": null
+      },
+      {
+        "name": "Get coming soon movies",
+        "method": "GET",
+        "url": "/api/movies/coming-soon",
+        "auth": false,
+        "body": null
+      },
+      {
+        "name": "Create movie",
+        "method": "POST",
+        "url": "/api/movies",
+        "auth": "ADMIN",
+        "body": {
+          "title": "Avengers: Endgame",
+          "description": "Superhero movie",
+          "durationMinutes": 181,
+          "genre": "ACTION",
+          "subtitleType": "VIETSUB",
+          "releaseDate": "2026-05-25",
+          "director": "Anthony Russo, Joe Russo",
+          "cast": "Robert Downey Jr., Chris Evans",
+          "rating": "PG-13",
+          "posterUrl": "https://example.com/poster.jpg",
+          "trailerUrl": "https://example.com/trailer",
+          "status": "NOW_SHOWING"
+        }
+      },
+      {
+        "name": "Update movie",
+        "method": "PUT",
+        "url": "/api/movies/{movieId}",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "movieId": 1
+        },
+        "body": {
+          "title": "Avengers: Endgame Updated",
+          "description": "Updated description",
+          "durationMinutes": 181,
+          "genre": "ACTION",
+          "subtitleType": "VIETSUB",
+          "releaseDate": "2026-05-25",
+          "director": "Anthony Russo, Joe Russo",
+          "cast": "Robert Downey Jr., Chris Evans",
+          "rating": "PG-13",
+          "posterUrl": "https://example.com/poster.jpg",
+          "trailerUrl": "https://example.com/trailer",
+          "status": "NOW_SHOWING"
+        }
+      },
+      {
+        "name": "Delete movie",
+        "method": "DELETE",
+        "url": "/api/movies/{movieId}",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "movieId": 1
+        },
+        "body": null
+      }
+    ],
+    "screensAndSeats": [
+      {
+        "name": "Get screen by id",
+        "method": "GET",
+        "url": "/api/screens/{screenId}",
+        "auth": false,
+        "pathVariables": {
+          "screenId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Create screen",
+        "method": "POST",
+        "url": "/api/screens",
+        "auth": "ADMIN",
+        "body": {
+          "cinema": {
+            "id": 1
+          },
+          "screenNumber": "A",
+          "totalSeats": 100,
+          "status": "ACTIVE"
+        }
+      },
+      {
+        "name": "Update screen",
+        "method": "PUT",
+        "url": "/api/screens/{screenId}",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "screenId": 1
+        },
+        "body": {
+          "screenNumber": "A1",
+          "totalSeats": 120,
+          "status": "ACTIVE"
+        }
+      },
+      {
+        "name": "Delete screen",
+        "method": "DELETE",
+        "url": "/api/screens/{screenId}",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "screenId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Get seats by screen",
+        "method": "GET",
+        "url": "/api/screens/{screenId}/seats",
+        "auth": false,
+        "pathVariables": {
+          "screenId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Get seat by id",
+        "method": "GET",
+        "url": "/api/screens/seats/{seatId}",
+        "auth": false,
+        "pathVariables": {
+          "seatId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Generate seats",
+        "method": "POST",
+        "url": "/api/screens/{screenId}/generate-seats?rows=10&seatsPerRow=12",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "screenId": 1
+        },
+        "queryParams": {
+          "rows": 10,
+          "seatsPerRow": 12
+        },
+        "body": null
+      }
+    ],
+    "showtimes": [
+      {
+        "name": "Get showtimes",
+        "method": "GET",
+        "url": "/api/showtimes",
+        "auth": false,
+        "body": null
+      },
+      {
+        "name": "Get showtime by id",
+        "method": "GET",
+        "url": "/api/showtimes/{showtimeId}",
+        "auth": false,
+        "pathVariables": {
+          "showtimeId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Get showtimes by movie",
+        "method": "GET",
+        "url": "/api/showtimes/movie/{movieId}?date=2026-05-25",
+        "auth": false,
+        "pathVariables": {
+          "movieId": 1
+        },
+        "queryParams": {
+          "date": "2026-05-25"
+        },
+        "body": null
+      },
+      {
+        "name": "Get showtimes by movie and cinema",
+        "method": "GET",
+        "url": "/api/showtimes/movie/{movieId}/cinema/{cinemaId}?date=2026-05-25",
+        "auth": false,
+        "pathVariables": {
+          "movieId": 1,
+          "cinemaId": 1
+        },
+        "queryParams": {
+          "date": "2026-05-25"
+        },
+        "body": null
+      },
+      {
+        "name": "Get showtimes by date range",
+        "method": "GET",
+        "url": "/api/showtimes/date-range?startDate=2026-05-25&endDate=2026-05-31",
+        "auth": false,
+        "queryParams": {
+          "startDate": "2026-05-25",
+          "endDate": "2026-05-31"
+        },
+        "body": null
+      },
+      {
+        "name": "Create showtime",
+        "method": "POST",
+        "url": "/api/showtimes",
+        "auth": "ADMIN",
+        "body": {
+          "movie": {
+            "id": 1
+          },
+          "screen": {
+            "id": 1
+          },
+          "showDate": "2026-05-25",
+          "showTime": "14:30:00",
+          "basePrice": 90000,
+          "status": "SCHEDULED"
+        }
+      },
+      {
+        "name": "Update showtime",
+        "method": "PUT",
+        "url": "/api/showtimes/{showtimeId}",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "showtimeId": 1
+        },
+        "body": {
+          "movie": {
+            "id": 1
+          },
+          "screen": {
+            "id": 1
+          },
+          "showDate": "2026-05-26",
+          "showTime": "18:00:00",
+          "basePrice": 100000,
+          "status": "SCHEDULED"
+        }
+      },
+      {
+        "name": "Delete showtime",
+        "method": "DELETE",
+        "url": "/api/showtimes/{showtimeId}",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "showtimeId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Reserve seats",
+        "method": "POST",
+        "url": "/api/showtimes/{showtimeId}/reserve?seats=2",
+        "auth": "INTERNAL_OR_ADMIN",
+        "pathVariables": {
+          "showtimeId": 1
+        },
+        "queryParams": {
+          "seats": 2
+        },
+        "body": null
+      },
+      {
+        "name": "Release seats",
+        "method": "POST",
+        "url": "/api/showtimes/{showtimeId}/release?seats=2",
+        "auth": "INTERNAL_OR_ADMIN",
+        "pathVariables": {
+          "showtimeId": 1
+        },
+        "queryParams": {
+          "seats": 2
+        },
+        "body": null
+      }
+    ],
+    "bookings": [
+      {
+        "name": "Get all bookings",
+        "method": "GET",
+        "url": "/api/bookings",
+        "auth": "ADMIN",
+        "body": null
+      },
+      {
+        "name": "Get my bookings",
+        "method": "GET",
+        "url": "/api/bookings/my-bookings",
+        "auth": "USER",
+        "body": null
+      },
+      {
+        "name": "Create booking",
+        "method": "POST",
+        "url": "/api/bookings",
+        "auth": "USER",
+        "body": {
+          "showtimeId": 1,
+          "cinemaId": 1,
+          "movieId": 1,
+          "seatIds": [
+            1,
+            2
+          ],
+          "totalAmount": 230000,
+          "productItems": [
+            {
+              "productId": 1,
+              "quantity": 1,
+              "unitPrice": 50000
+            }
+          ]
+        }
+      },
+      {
+        "name": "Get booking by id",
+        "method": "GET",
+        "url": "/api/bookings/{bookingId}",
+        "auth": "USER_OR_ADMIN",
+        "pathVariables": {
+          "bookingId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Confirm booking",
+        "method": "PUT",
+        "url": "/api/bookings/{bookingId}/confirm",
+        "auth": "USER_OR_ADMIN",
+        "pathVariables": {
+          "bookingId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Cancel booking",
+        "method": "PUT",
+        "url": "/api/bookings/{bookingId}/cancel?reason=change-plan",
+        "auth": "USER_OR_ADMIN",
+        "pathVariables": {
+          "bookingId": 1
+        },
+        "queryParams": {
+          "reason": "change-plan"
+        },
+        "body": null
+      }
+    ],
+    "payments": [
+      {
+        "name": "Create payment",
+        "method": "POST",
+        "url": "/api/payments",
+        "auth": "USER",
+        "body": {
+          "bookingId": 1,
+          "paymentMethod": "BANK_TRANSFER",
+          "amount": 230000,
+          "currency": "VND"
+        }
+      },
+      {
+        "name": "Get payment by id",
+        "method": "GET",
+        "url": "/api/payments/{paymentId}",
+        "auth": "USER_OR_ADMIN",
+        "pathVariables": {
+          "paymentId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Get payment by reference",
+        "method": "GET",
+        "url": "/api/payments/reference/{paymentReference}",
+        "auth": "USER_OR_ADMIN",
+        "pathVariables": {
+          "paymentReference": "PAYABC123"
+        },
+        "body": null
+      },
+      {
+        "name": "Get payments by booking",
+        "method": "GET",
+        "url": "/api/payments/booking/{bookingId}",
+        "auth": "USER_OR_ADMIN",
+        "pathVariables": {
+          "bookingId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Payment callback",
+        "method": "POST",
+        "url": "/api/payments/callback",
+        "auth": false,
+        "body": {
+          "paymentReference": "PAYABC123",
+          "paymentStatus": "PAID"
+        }
+      },
+      {
+        "name": "Refund payment",
+        "method": "POST",
+        "url": "/api/payments/{paymentId}/refund",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "paymentId": 1
+        },
+        "body": {
+          "refundAmount": 230000
+        }
+      }
+    ],
+    "products": [
+      {
+        "name": "Get products",
+        "method": "GET",
+        "url": "/api/products",
+        "auth": false,
+        "body": null
+      },
+      {
+        "name": "Get product by id",
+        "method": "GET",
+        "url": "/api/products/{productId}",
+        "auth": false,
+        "pathVariables": {
+          "productId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Get available products by cinema",
+        "method": "GET",
+        "url": "/api/products/cinema/{cinemaId}",
+        "auth": false,
+        "pathVariables": {
+          "cinemaId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Create product",
+        "method": "POST",
+        "url": "/api/products",
+        "auth": "ADMIN",
+        "body": {
+          "name": "Combo Popcorn + Coke",
+          "description": "Large popcorn and coke",
+          "category": "COMBO",
+          "price": 50000,
+          "costPrice": 30000,
+          "imageUrl": "https://example.com/combo.jpg",
+          "isAvailable": true,
+          "status": "ACTIVE"
+        }
+      },
+      {
+        "name": "Update product",
+        "method": "PUT",
+        "url": "/api/products/{productId}",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "productId": 1
+        },
+        "body": {
+          "name": "Combo Popcorn + Coke Updated",
+          "description": "Updated combo",
+          "category": "COMBO",
+          "price": 55000,
+          "costPrice": 32000,
+          "imageUrl": "https://example.com/combo.jpg",
+          "isAvailable": true,
+          "status": "ACTIVE"
+        }
+      },
+      {
+        "name": "Delete product",
+        "method": "DELETE",
+        "url": "/api/products/{productId}",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "productId": 1
+        },
+        "body": null
+      }
+    ],
+    "inventory": [
+      {
+        "name": "Get all inventory",
+        "method": "GET",
+        "url": "/api/inventory",
+        "auth": "ADMIN",
+        "body": null
+      },
+      {
+        "name": "Get inventory by cinema",
+        "method": "GET",
+        "url": "/api/inventory/cinema/{cinemaId}",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "cinemaId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Get low stock inventory",
+        "method": "GET",
+        "url": "/api/inventory/low-stock",
+        "auth": "ADMIN",
+        "body": null
+      },
+      {
+        "name": "Create inventory",
+        "method": "POST",
+        "url": "/api/inventory",
+        "auth": "ADMIN",
+        "body": {
+          "cinemaId": 1,
+          "productId": 1,
+          "quantity": 100,
+          "minStockLevel": 10,
+          "maxStockLevel": 500
+        }
+      },
+      {
+        "name": "Update inventory",
+        "method": "PUT",
+        "url": "/api/inventory",
+        "auth": "ADMIN",
+        "body": {
+          "cinemaId": 1,
+          "productId": 1,
+          "quantity": 120,
+          "minStockLevel": 15,
+          "maxStockLevel": 600
+        }
+      },
+      {
+        "name": "Adjust stock",
+        "method": "POST",
+        "url": "/api/inventory/adjust",
+        "auth": "ADMIN",
+        "body": {
+          "cinemaId": 1,
+          "productId": 1,
+          "quantity": 80,
+          "movementType": "ADJUSTMENT",
+          "notes": "Manual count adjustment",
+          "performedBy": 1
+        }
+      },
+      {
+        "name": "Restock",
+        "method": "POST",
+        "url": "/api/inventory/restock",
+        "auth": "ADMIN",
+        "body": {
+          "cinemaId": 1,
+          "productId": 1,
+          "quantity": 50,
+          "notes": "Weekly restock",
+          "performedBy": 1
+        }
+      },
+      {
+        "name": "Get all stock movements",
+        "method": "GET",
+        "url": "/api/inventory/movements",
+        "auth": "ADMIN",
+        "body": null
+      },
+      {
+        "name": "Get movements by inventory",
+        "method": "GET",
+        "url": "/api/inventory/{inventoryId}/movements",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "inventoryId": 1
+        },
+        "body": null
+      }
+    ],
+    "notifications": [
+      {
+        "name": "Get all notifications",
+        "method": "GET",
+        "url": "/api/notifications",
+        "auth": "ADMIN",
+        "body": null
+      },
+      {
+        "name": "Get notification by id",
+        "method": "GET",
+        "url": "/api/notifications/{notificationId}",
+        "auth": "USER_OR_ADMIN",
+        "pathVariables": {
+          "notificationId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Get failed notifications",
+        "method": "GET",
+        "url": "/api/notifications/failed",
+        "auth": "ADMIN",
+        "body": null
+      },
+      {
+        "name": "Resend notification",
+        "method": "POST",
+        "url": "/api/notifications/{notificationId}/resend",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "notificationId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Send test email",
+        "method": "POST",
+        "url": "/api/notifications/test-email",
+        "auth": "ADMIN",
+        "body": {
+          "userId": 1,
+          "recipient": "target@example.com",
+          "subject": "Test Cinema Email",
+          "message": "Email service is working.",
+          "htmlMessage": "<p>Email service is working.</p>"
+        }
+      },
+      {
+        "name": "Get notifications by user",
+        "method": "GET",
+        "url": "/api/notifications/users/{userId}",
+        "auth": "USER_OR_ADMIN",
+        "pathVariables": {
+          "userId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Get notification preference",
+        "method": "GET",
+        "url": "/api/notifications/preferences/users/{userId}",
+        "auth": "USER_OR_ADMIN",
+        "pathVariables": {
+          "userId": 1
+        },
+        "body": null
+      },
+      {
+        "name": "Update notification preference",
+        "method": "PUT",
+        "url": "/api/notifications/preferences/users/{userId}",
+        "auth": "USER_OR_ADMIN",
+        "pathVariables": {
+          "userId": 1
+        },
+        "body": {
+          "emailNotificationsEnabled": true,
+          "bookingCreatedEmailEnabled": true,
+          "bookingConfirmedEmailEnabled": true,
+          "bookingCancelledEmailEnabled": true,
+          "promotionEmailEnabled": false
+        }
+      },
+      {
+        "name": "Get email templates",
+        "method": "GET",
+        "url": "/api/notifications/templates",
+        "auth": "ADMIN",
+        "body": null
+      },
+      {
+        "name": "Create email template",
+        "method": "POST",
+        "url": "/api/notifications/templates",
+        "auth": "ADMIN",
+        "body": {
+          "templateName": "BOOKING_CREATED",
+          "subject": "Booking created {{bookingReference}}",
+          "bodyHtml": "<p>Hello {{userEmail}}, booking {{bookingReference}} was created for {{movieTitle}}.</p>",
+          "bodyText": "Hello {{userEmail}}, booking {{bookingReference}} was created for {{movieTitle}}.",
+          "variables": "[\"userEmail\",\"bookingReference\",\"movieTitle\"]",
+          "isActive": true
+        }
+      },
+      {
+        "name": "Update email template",
+        "method": "PUT",
+        "url": "/api/notifications/templates/{templateId}",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "templateId": 1
+        },
+        "body": {
+          "templateName": "BOOKING_CONFIRMED",
+          "subject": "Booking confirmed {{bookingReference}}",
+          "bodyHtml": "<p>Your booking {{bookingReference}} for {{movieTitle}} is confirmed.</p>",
+          "bodyText": "Your booking {{bookingReference}} for {{movieTitle}} is confirmed.",
+          "variables": "[\"bookingReference\",\"movieTitle\"]",
+          "isActive": true
+        }
+      },
+      {
+        "name": "Delete email template",
+        "method": "DELETE",
+        "url": "/api/notifications/templates/{templateId}",
+        "auth": "ADMIN",
+        "pathVariables": {
+          "templateId": 1
+        },
+        "body": null
+      }
+    ]
+  }
+}
