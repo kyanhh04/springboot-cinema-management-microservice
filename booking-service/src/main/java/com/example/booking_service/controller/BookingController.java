@@ -91,24 +91,6 @@ public class BookingController {
         }
     }
 
-    @PutMapping("/{id}/confirm")
-    public ResponseEntity<BookingResponse> confirmBooking(@PathVariable Long id) {
-        try {
-            Long userId = SecurityUtils.getCurrentUserId();
-            Booking booking = bookingService.getBookingById(id);
-            
-            // Check ownership
-            if (!booking.getUserId().equals(userId) && !SecurityUtils.hasRole("ADMIN")) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
-            
-            Booking confirmed = bookingService.confirmBooking(id);
-            return ResponseEntity.ok(BookingResponse.fromEntity(confirmed));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
     @PutMapping("/{id}/cancel")
     public ResponseEntity<BookingResponse> cancelBooking(
             @PathVariable Long id,
