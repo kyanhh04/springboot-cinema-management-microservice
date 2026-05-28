@@ -110,8 +110,9 @@ public class BookingService {
         
         Booking booking = getBookingById(bookingId);
         
-        if (booking.getBookingStatus() == Booking.BookingStatus.CANCELLED) {
-            throw new RuntimeException("Booking is already cancelled");
+        if (booking.getBookingStatus() != Booking.BookingStatus.PENDING) {
+            throw new RuntimeException("Only pending bookings can be cancelled. Current status: "
+                    + booking.getBookingStatus());
         }
         
         booking.setBookingStatus(Booking.BookingStatus.CANCELLED);
