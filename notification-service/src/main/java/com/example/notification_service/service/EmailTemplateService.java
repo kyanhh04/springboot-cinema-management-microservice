@@ -30,6 +30,9 @@ public class EmailTemplateService {
 
     @Transactional
     public EmailTemplate createTemplate(EmailTemplate template) {
+        if (template.getIsActive() == null) {
+            template.setIsActive(true);
+        }
         return emailTemplateRepository.save(template);
     }
 
@@ -41,7 +44,9 @@ public class EmailTemplateService {
         template.setBodyHtml(templateDetails.getBodyHtml());
         template.setBodyText(templateDetails.getBodyText());
         template.setVariables(templateDetails.getVariables());
-        template.setIsActive(templateDetails.getIsActive());
+        if (templateDetails.getIsActive() != null) {
+            template.setIsActive(templateDetails.getIsActive());
+        }
         return emailTemplateRepository.save(template);
     }
 

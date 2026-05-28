@@ -1,0 +1,126 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20260528-01-create-users-table
+      author: codex
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: users
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uk_users_username
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uk_users_email
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: full_name
+                  type: VARCHAR(255)
+              - column:
+                  name: phone_number
+                  type: VARCHAR(255)
+              - column:
+                  name: role
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+
+  - changeSet:
+      id: 20260528-02-seed-admin-user
+      author: codex
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: "0"
+            sql: SELECT COUNT(*) FROM users WHERE username = 'admin'
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: admin
+              - column:
+                  name: email
+                  value: admin@cinema.local
+              - column:
+                  name: password
+                  value: '$2a$10$.ZQfA4i2Wtl/UoL8PpICxeqoMjMUXXWaFUG4POQKBLouucsdUdQqa'
+              - column:
+                  name: full_name
+                  value: Kỳ Anh
+              - column:
+                  name: role
+                  value: ADMIN
+              - column:
+                  name: active
+                  valueBoolean: true
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+  - changeSet:
+      id: 20260528-03-normalize-admin-user
+      author: codex
+      changes:
+        - update:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: admin@cinema.local
+              - column:
+                  name: password
+                  value: '$2a$10$.ZQfA4i2Wtl/UoL8PpICxeqoMjMUXXWaFUG4POQKBLouucsdUdQqa'
+              - column:
+                  name: full_name
+                  value: Kỳ Anh
+              - column:
+                  name: role
+                  value: ADMIN
+              - column:
+                  name: active
+                  valueBoolean: true
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP
+            where: username = 'admin'

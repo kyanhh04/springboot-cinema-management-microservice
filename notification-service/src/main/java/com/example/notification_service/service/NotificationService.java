@@ -1,6 +1,7 @@
 package com.example.notification_service.service;
 
 import com.example.notification_service.dto.TestEmailRequest;
+import com.example.notification_service.dto.NotificationPreferenceRequest;
 import com.example.notification_service.entity.EmailTemplate;
 import com.example.notification_service.entity.Notification;
 import com.example.notification_service.entity.NotificationPreference;
@@ -70,12 +71,34 @@ public class NotificationService {
     @Transactional
     public NotificationPreference updatePreference(Long userId, NotificationPreference request) {
         NotificationPreference preference = getPreferenceByUserId(userId);
-        preference.setEmailNotificationsEnabled(request.getEmailNotificationsEnabled());
-        preference.setBookingCreatedEmailEnabled(request.getBookingCreatedEmailEnabled());
-        preference.setBookingConfirmedEmailEnabled(request.getBookingConfirmedEmailEnabled());
-        preference.setBookingCancelledEmailEnabled(request.getBookingCancelledEmailEnabled());
-        preference.setPromotionEmailEnabled(request.getPromotionEmailEnabled());
+        if (request.getEmailNotificationsEnabled() != null) {
+            preference.setEmailNotificationsEnabled(request.getEmailNotificationsEnabled());
+        }
+        if (request.getBookingCreatedEmailEnabled() != null) {
+            preference.setBookingCreatedEmailEnabled(request.getBookingCreatedEmailEnabled());
+        }
+        if (request.getBookingConfirmedEmailEnabled() != null) {
+            preference.setBookingConfirmedEmailEnabled(request.getBookingConfirmedEmailEnabled());
+        }
+        if (request.getBookingCancelledEmailEnabled() != null) {
+            preference.setBookingCancelledEmailEnabled(request.getBookingCancelledEmailEnabled());
+        }
+        if (request.getPromotionEmailEnabled() != null) {
+            preference.setPromotionEmailEnabled(request.getPromotionEmailEnabled());
+        }
         return notificationPreferenceRepository.save(preference);
+    }
+
+    @Transactional
+    public NotificationPreference updatePreferenceFromDto(Long userId, NotificationPreferenceRequest request) {
+        NotificationPreference prefReq = new NotificationPreference();
+        prefReq.setUserId(userId);
+        prefReq.setEmailNotificationsEnabled(request.getEmailNotificationsEnabled());
+        prefReq.setBookingCreatedEmailEnabled(request.getBookingCreatedEmailEnabled());
+        prefReq.setBookingConfirmedEmailEnabled(request.getBookingConfirmedEmailEnabled());
+        prefReq.setBookingCancelledEmailEnabled(request.getBookingCancelledEmailEnabled());
+        prefReq.setPromotionEmailEnabled(request.getPromotionEmailEnabled());
+        return updatePreference(userId, prefReq);
     }
 
     @Transactional
@@ -165,7 +188,7 @@ public class NotificationService {
         } catch (Exception e) {
             log.error("Failed to send notification id={}", notification.getId(), e);
             notification.setStatus(Notification.NotificationStatus.FAILED);
-            notification.setRetryCount(notification.getRetryCount() + 1);
+            notification.setRetryCount((notification.getRetryCount() != null ? notification.getRetryCount() : 0) + 1);
             notification.setNextRetryAt(LocalDateTime.now().plusMinutes(retryDelayMinutes));
             notification.setErrorMessage(e.getMessage());
         }

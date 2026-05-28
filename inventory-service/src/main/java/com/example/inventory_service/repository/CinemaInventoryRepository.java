@@ -25,6 +25,16 @@ public interface CinemaInventoryRepository extends JpaRepository<CinemaInventory
             @Param("cinemaId") Long cinemaId,
             @Param("productId") Long productId);
 
+    @Query("""
+            select inventory
+            from CinemaInventory inventory
+            where inventory.cinemaId = :cinemaId
+              and inventory.product.id = :productId
+            """)
+    Optional<CinemaInventory> findByCinemaIdAndProductId(
+            @Param("cinemaId") Long cinemaId,
+            @Param("productId") Long productId);
+
     List<CinemaInventory> findByCinemaId(Long cinemaId);
 
     @Query("""

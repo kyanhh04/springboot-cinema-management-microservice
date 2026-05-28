@@ -1,17 +1,24 @@
 package com.example.notification_service;
 
+import com.example.common.exception.GlobalExceptionHandler;
+import com.example.common.security.JwtAuthenticationDetails;
 import com.example.notification_service.controller.NotificationController;
 import com.example.notification_service.entity.EmailTemplate;
 import com.example.notification_service.entity.Notification;
 import com.example.notification_service.entity.NotificationPreference;
 import com.example.notification_service.service.EmailTemplateService;
 import com.example.notification_service.service.NotificationService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -42,7 +49,13 @@ class NotificationApiContractTest {
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(
                 new NotificationController(notificationService, emailTemplateService)
-        ).build();
+        ).setControllerAdvice(new GlobalExceptionHandler()).build();
+        authenticateAs(1L, "admin", "ADMIN");
+    }
+
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
     }
 
     @Test
@@ -73,6 +86,47 @@ class NotificationApiContractTest {
         mockMvc.perform(get("/api/notifications/preferences/users/7")).andExpect(status().isOk()).andExpect(jsonPath("$.userId").value(7));
         mockMvc.perform(put("/api/notifications/preferences/users/7").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"emailNotificationsEnabled\":true,\"bookingCreatedEmailEnabled\":true}"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void userScopedEndpointsRejectOtherUsers() throws Exception {
+        authenticateAs(99L, "jane", "USER");
+
+        when(notificationService.getNotificationById(1L)).thenReturn(notification());
+
+        mockMvc.perform(get("/api/notifications/1"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").value("ACCESS_DENIED"));
+        mockMvc.perform(get("/api/notifications/users/7"))
+                .andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/notifications/preferences/users/7"))
+                .andExpect(status().isForbidden());
+        mockMvc.perform(put("/api/notifications/preferences/users/7").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"emailNotificationsEnabled\":true}"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void userScopedEndpointsAllowOwner() throws Exception {
+        authenticateAs(7L, "john", "USER");
+
+        Notification notification = notification();
+        NotificationPreference preference = new NotificationPreference();
+        preference.setId(2L);
+        preference.setUserId(7L);
+        preference.setEmailNotificationsEnabled(true);
+
+        when(notificationService.getNotificationById(1L)).thenReturn(notification);
+        when(notificationService.getNotificationsByUserId(7L)).thenReturn(List.of(notification));
+        when(notificationService.getPreferenceByUserId(7L)).thenReturn(preference);
+        when(notificationService.updatePreference(eq(7L), any())).thenReturn(preference);
+
+        mockMvc.perform(get("/api/notifications/1")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/notifications/users/7")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/notifications/preferences/users/7")).andExpect(status().isOk());
+        mockMvc.perform(put("/api/notifications/preferences/users/7").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"emailNotificationsEnabled\":true}"))
                 .andExpect(status().isOk());
     }
 
@@ -116,5 +170,14 @@ class NotificationApiContractTest {
         notification.setRecipient("user@example.com");
         notification.setStatus(Notification.NotificationStatus.SENT);
         return notification;
+    }
+
+    private void authenticateAs(Long userId, String username, String role) {
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                username,
+                null,
+                List.of(new SimpleGrantedAuthority("ROLE_" + role)));
+        authentication.setDetails(new JwtAuthenticationDetails(userId, role, new MockHttpServletRequest()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
